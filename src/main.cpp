@@ -140,7 +140,8 @@ class Enemy{
     public:
         Enemy(int starting_x, int starting_y, bn::size enemy_size) :
             sprite(bn::sprite_items::square.create_sprite(starting_x, starting_y)),
-            size(enemy_size)
+            size(enemy_size),
+            bounding_box(create_bounding_box(sprite, size))
         {}
 
     bn::sprite_ptr sprite;
@@ -161,7 +162,7 @@ int main() {
 
     //Add enemy 
 
-    Enemy enemy = Enemy(20,22, ENEMY_SIZE);
+    Enemy enemy = Enemy(20,52, ENEMY_SIZE);
 
     while(true) {
         player.update();
