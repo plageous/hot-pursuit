@@ -193,14 +193,42 @@ int main() {
    // Create a vector of enemies (capacity 8, change if you want more)
     bn::vector<Enemy, 8> enemies;
 
+    //Add enemies
+    enemies.push_back(Enemy(20, 52,  1,  ENEMY_SIZE));
+    enemies.push_back(Enemy(-40, -10, 1,  ENEMY_SIZE));
+    enemies.push_back(Enemy(60,  30,  1,  ENEMY_SIZE));
+
     while(true) {
         player.update();
         enemy.update(player);
+
+        bool caught = false;
 
          if(enemy.bounding_box.intersects(player.bounding_box)) {
             scoreDisplay.resetScore();
             player.sprite.set_x(44);
             player.sprite.set_y(22);
+        }
+        // Update each enemy + check collision against player
+        for(Enemy& enemy : enemies) {
+            enemy.update(player);
+
+            if(enemy.bounding_box.intersects(player.bounding_box)) {
+                caught = true;
+                break;
+            }
+        }
+
+        // If ANY enemy catches the player, reset score + player position
+        if(caught) {
+            scoreDisplay.resetScore();
+            player.sprite.set_x(44);
+            player.sprite.set_y(22);
+            player.bounding_box = create_bounding_box(player.sprite, player.size); // keep collision accurate
+        }
+        else {
+            // Only increase score when not caught (so it doesn't instantly become 1 after reset)
+            scoreDisplay.update();
         }
 
         bn::core::update();
