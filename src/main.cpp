@@ -6,6 +6,7 @@
 #include <bn_string.h>
 #include <bn_sprite_ptr.h>
 #include <bn_sprite_text_generator.h>
+#include <bn_random.h>
 
 #include "common_fixed_8x16_font.h"
 #include "bn_sprite_items_dot.h"
@@ -30,6 +31,9 @@ static constexpr int SCORE_Y = -70;
 // High score location
 static constexpr int HIGH_SCORE_X = -70;
 static constexpr int HIGH_SCORE_Y = -70;
+
+// random number generator instance
+static bn::random rng = bn::random();
 
 /**
  * Creates a rectangle centered at a sprite's location with a given size.
@@ -161,6 +165,11 @@ class Enemy{
             }
 
             bounding_box = create_bounding_box(sprite, size);
+            
+            if (bounding_box.intersects(player.bounding_box)) {
+                sprite.set_x(rng.get_fixed(MIN_X, MAX_X));
+                sprite.set_y(rng.get_fixed(MIN_Y, MAX_Y));
+            }
         }
 
     bn::sprite_ptr sprite;
