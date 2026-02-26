@@ -117,16 +117,16 @@ class Player {
          * Update the position and bounding box of the player based on d-pad movement.
          */
         void update() {
-            if(bn::keypad::right_held()) {
+            if(bn::keypad::right_held() && sprite.x() <= MAX_X) {
                 sprite.set_x(sprite.x() + speed);
             }
-            if(bn::keypad::left_held()) {
+            if(bn::keypad::left_held() && sprite.x() >= MIN_X) {
                 sprite.set_x(sprite.x() - speed);
             }
-            if(bn::keypad::up_held()) {
+            if(bn::keypad::up_held() && sprite.y() >= MIN_Y) {
                 sprite.set_y(sprite.y() - speed);
             }
-            if(bn::keypad::down_held()) {
+            if(bn::keypad::down_held() && sprite.y() <= MAX_Y) {
                 sprite.set_y(sprite.y() + speed);
             }
 
