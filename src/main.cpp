@@ -106,7 +106,6 @@ class ScoreDisplay {
 
 class Player {
     public:
-
         Player(int starting_x, int starting_y, bn::fixed player_speed, bn::size player_size) :
             sprite(bn::sprite_items::dot.create_sprite(starting_x, starting_y)),
             speed(player_speed),
@@ -142,47 +141,12 @@ class Player {
 
 class Enemy{
     public:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
         Enemy(int starting_x, int starting_y, bn::fixed enemy_speed, bn::size enemy_size) :
-=======
-        Enemy(int starting_x, int starting_y, bn::fixed x_spd, bn::fixed y_spd, bn::size enemy_size) :
->>>>>>> Stashed changes
-=======
-        Enemy(int starting_x, int starting_y, bn::fixed x_spd, bn::fixed y_spd, bn::size enemy_size) :
->>>>>>> Stashed changes
-=======
-        Enemy(int starting_x, int starting_y, bn::fixed x_spd, bn::fixed y_spd, bn::size enemy_size) :
->>>>>>> Stashed changes
             sprite(bn::sprite_items::square.create_sprite(starting_x, starting_y)),
-            x_speed(x_spd),
-            y_speed(y_spd),
             size(enemy_size),
             speed(enemy_speed),
             bounding_box(create_bounding_box(sprite, size))
         {}
-    
-        void update() {
-        // Move
-        bn::fixed x = sprite.x() + x_speed;
-        bn::fixed y = sprite.y() + y_speed;
-
-        // Bounce off edges
-        if(x > MAX_X) { x = MAX_X; x_speed *= -1; }
-        if(x < MIN_X) { x = MIN_X; x_speed *= -1; }
-
-        if(y > MAX_Y) { y = MAX_Y; y_speed *= -1; }
-        if(y < MIN_Y) { y = MIN_Y; y_speed *= -1; }
-
-        sprite.set_x(x);
-        sprite.set_y(y);
-
-        // Refresh bounding box after moving
-        bounding_box = create_bounding_box(sprite, size);
-    }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
         // updates enemy position based on player position
         void update(Player& player) {
@@ -206,14 +170,8 @@ class Enemy{
                 sprite.set_y(rng.get_fixed(MIN_Y, MAX_Y));
             }
         }
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
     bn::sprite_ptr sprite;
-    bn::fixed x_speed;
-    bn::fixed y_speed;
     bn::fixed speed; 
     bn::size size; 
     bn::rect bounding_box;
@@ -229,58 +187,22 @@ int main() {
     // TODO: we will move the initialization logic to a constructor.
     Player player = Player(50,52, 4.5, PLAYER_SIZE);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     //Add enemy 
     Enemy enemy = Enemy(20,52, 2, ENEMY_SIZE);
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
    // Create a vector of enemies (capacity 8, change if you want more)
     bn::vector<Enemy, 8> enemies;
-
-    // Manually add a few enemies BEFORE the loop
-    enemies.push_back(Enemy(20, 52,  1,  0.5, ENEMY_SIZE));
-    enemies.push_back(Enemy(-40, -10, -1,  1,   ENEMY_SIZE));
-    enemies.push_back(Enemy(60,  30,  0.75, -1, ENEMY_SIZE));
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
     while(true) {
         player.update();
         enemy.update(player);
 
-        bool caught = false;
-
-        // Update each enemy + check collision against player
-        for(Enemy& enemy : enemies) {
-            enemy.update();
-
-            if(enemy.bounding_box.intersects(player.bounding_box)) {
-                caught = true;
-                break;
-            }  
-        }
-
-        // If any enemy catches the player, reset score + player position
-        if(caught) {
+         if(enemy.bounding_box.intersects(player.bounding_box)) {
             scoreDisplay.resetScore();
             player.sprite.set_x(44);
             player.sprite.set_y(22);
-            player.bounding_box = create_bounding_box(player.sprite, player.size); // keep collision accurate
         }
-        else {
-            // Only increase score when not caught (so it doesn't instantly become 1 after reset)
-            scoreDisplay.update();
-        }
+
         bn::core::update();
     }
 }
