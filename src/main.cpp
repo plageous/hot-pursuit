@@ -14,6 +14,7 @@
 #include "bn_sprite_items_square.h"
 #include "Player.h"
 #include "ScoreDisplay.h"
+#include "Powerup.h"
 
 // Width and height of the the player bounding box
 static constexpr bn::size PLAYER_SIZE = {8, 8};
@@ -34,6 +35,10 @@ static constexpr int SCORE_Y = -70;
 // High score location
 static constexpr int HIGH_SCORE_X = -70;
 static constexpr int HIGH_SCORE_Y = -70;
+
+//Power up const 
+static constexpr int POWERUP_SPAWN_TIME = 300;
+static constexpr int IMMUNITY_TIME = 180;
 
 // random number generator instance
 static bn::random rng = bn::random();
@@ -60,8 +65,15 @@ int main() {
     // TODO: we will move the initialization logic to a constructor.
     Player player = Player(50,52, 4.5, PLAYER_SIZE);
 
-    //Add enemy 
-    //Enemy enemy = Enemy(20,52, 2, ENEMY_SIZE);
+    //add power up variables
+
+    PowerUp powerup;         
+    bool powerup_spawned = false;
+
+    int global_frame_counter = 0;
+
+    bool immunity_active = false;
+    int immunity_counter = 0;
 
    // Create a vector of enemies (capacity 8, change if you want more)
     bn::vector<Enemy, 8> enemies;
@@ -81,6 +93,32 @@ int main() {
         player.update();
 
         frame_counter++;
+
+        //power up logic 
+        global_frame_counter++;
+
+        if(!powerup_spawned && global_frame_counter >= POWERUP_SPAWN_TIME) {
+            powerup.spawn(rng.get_int(MIN_X, MAX_X), rng.get_int(MIN_Y, MAX_Y));
+            powerup_spawned = true;
+        }
+
+        //power up pickup
+        powerup.update();
+
+        if(powerup.is_active() && powerup.get_bounding_box().intersects(player.bounding_box)) {
+            immunity_active = true;
+            immunity_counter = IMMUNITY_TIME;
+            powerup.destroy();
+        }
+
+        //power up timer
+        if(immunity_active) {
+        --immunity_counter;
+        if(immunity_counter <= 0) {
+            immunity_active = false;
+        }
+    }
+
 
         // Spawn new enemy every 3 if there's room
         if(frame_counter >= SPAWN_RATE) {
@@ -102,7 +140,7 @@ int main() {
         for(Enemy& enemy : enemies) {
             enemy.update(player);
 
-            if(enemy.bounding_box.intersects(player.bounding_box)) {
+            if(enemy.bounding_box.intersects(player.bounding_box) && !immunity_active) {
                 caught = true;
                 break;
             }
