@@ -234,7 +234,29 @@ int main() {
                 break;
             }
         }
+         if(caught) {
+            scoreDisplay.resetScore();
 
+            player.sprite.set_x(44);
+            player.sprite.set_y(22);
+            player.bounding_box = create_bounding_box(player.sprite, player.size);
+
+            // Keep only one enemy
+            if(enemies.size() > 1) {
+                Enemy survivor = enemies.front();
+                enemies.clear();
+                enemies.push_back(survivor);
+            }
+
+            // Move surviving enemy to random location
+            enemies.front().sprite.set_x(rng.get_int(MIN_X, MAX_X));
+            enemies.front().sprite.set_y(rng.get_int(MIN_Y, MAX_Y));
+            enemies.front().bounding_box =
+                create_bounding_box(enemies.front().sprite, ENEMY_SIZE);
+        }
+        else {
+            scoreDisplay.update();
+        }
 
         bn::core::update();
     }
