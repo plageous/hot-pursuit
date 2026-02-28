@@ -67,7 +67,8 @@ int main() {
 
     //add power up variables
 
-    PowerUp powerup;         
+    PowerUp powerup;  
+    
     bool powerup_spawned = false;
 
     int global_frame_counter = 0;
@@ -118,7 +119,12 @@ int main() {
             immunity_active = false;
         }
     }
-
+        //if the player has immunity, make the player sprite blink
+        if(immunity_active) {
+            player.sprite.set_visible((immunity_counter / 5) % 2);
+        } else {
+            player.sprite.set_visible(true);
+        }
 
         // Spawn new enemy every 3 if there's room
         if(frame_counter >= SPAWN_RATE) {
@@ -151,6 +157,14 @@ int main() {
             player.sprite.set_x(44);
             player.sprite.set_y(22);
             player.bounding_box = create_bounding_box(player.sprite, player.size);
+            
+            //reset power up 
+            powerup.destroy();
+            powerup_spawned = false;
+            global_frame_counter = 0;
+            immunity_active = false;
+            immunity_counter = 0;
+            player.sprite.set_visible(true);
 
             // Keep only one enemy
             if(enemies.size() > 1) {
