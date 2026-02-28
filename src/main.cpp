@@ -8,9 +8,11 @@
 #include <bn_sprite_text_generator.h>
 #include <bn_random.h>
 
+#include "Enemy.h"
 #include "common_fixed_8x16_font.h"
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
+#include "Player.h"
 
 // Width and height of the the player bounding box
 static constexpr bn::size PLAYER_SIZE = {8, 8};
@@ -102,79 +104,6 @@ class ScoreDisplay {
         int high_score; // best core
         bn::vector<bn::sprite_ptr, MAX_SCORE_CHARS> score_sprites; // Sprites to display scores
         bn::sprite_text_generator text_generator; // Text generator for scores
-};
-
-class Player {
-    public:
-        Player(int starting_x, int starting_y, bn::fixed player_speed, bn::size player_size) :
-            sprite(bn::sprite_items::dot.create_sprite(starting_x, starting_y)),
-            speed(player_speed),
-            size(player_size),
-            bounding_box(create_bounding_box(sprite, size))
-        {}
-        /**
-         * Update the position and bounding box of the player based on d-pad movement.
-         */
-        void update() {
-            if(bn::keypad::right_held() && sprite.x() <= MAX_X) {
-                sprite.set_x(sprite.x() + speed);
-            }
-            if(bn::keypad::left_held() && sprite.x() >= MIN_X) {
-                sprite.set_x(sprite.x() - speed);
-            }
-            if(bn::keypad::up_held() && sprite.y() >= MIN_Y) {
-                sprite.set_y(sprite.y() - speed);
-            }
-            if(bn::keypad::down_held() && sprite.y() <= MAX_Y) {
-                sprite.set_y(sprite.y() + speed);
-            }
-
-            bounding_box = create_bounding_box(sprite, size);
-        }
-
-        // Create the sprite. This will be moved to a constructor
-        bn::sprite_ptr sprite;
-        bn::fixed speed; // The speed of the player
-        bn::size size; // The width and height of the sprite
-        bn::rect bounding_box; // The rectangle around the sprite for checking collision
-};
-
-class Enemy{
-    public:
-        Enemy(int starting_x, int starting_y, bn::fixed enemy_speed, bn::size enemy_size) :
-            sprite(bn::sprite_items::square.create_sprite(starting_x, starting_y)),
-            size(enemy_size),
-            speed(enemy_speed),
-            bounding_box(create_bounding_box(sprite, size))
-        {}
-
-        // updates enemy position based on player position
-        void update(Player& player) {
-            if (player.sprite.x() > sprite.x()) {
-                sprite.set_x(sprite.x() + speed);
-            }
-            if (player.sprite.x() < sprite.x()) {
-                sprite.set_x(sprite.x() - speed);
-            }
-            if (player.sprite.y() > sprite.y()) {
-                sprite.set_y(sprite.y() + speed);
-            }
-            if (player.sprite.y() < sprite.y()) {
-                sprite.set_y(sprite.y() - speed);
-            }
-
-            bounding_box = create_bounding_box(sprite, size);
-            
-            if (bounding_box.intersects(player.bounding_box)) {
-                sprite.set_x(rng.get_fixed(MIN_X, MAX_X));
-                sprite.set_y(rng.get_fixed(MIN_Y, MAX_Y));
-            }
-        }
-
-    bn::sprite_ptr sprite;
-    bn::fixed speed; 
-    bn::size size; 
-    bn::rect bounding_box;
 };
 
 int main() {
