@@ -188,27 +188,43 @@ int main() {
     Player player = Player(50,52, 4.5, PLAYER_SIZE);
 
     //Add enemy 
-    Enemy enemy = Enemy(20,52, 2, ENEMY_SIZE);
+    //Enemy enemy = Enemy(20,52, 2, ENEMY_SIZE);
 
    // Create a vector of enemies (capacity 8, change if you want more)
     bn::vector<Enemy, 8> enemies;
 
-    //Add enemies
-    enemies.push_back(Enemy(20, 52,  1,  ENEMY_SIZE));
-    enemies.push_back(Enemy(-40, -10, 1,  ENEMY_SIZE));
-    enemies.push_back(Enemy(60,  30,  1,  ENEMY_SIZE));
+    //Start with 1 enem
+    enemies.push_back(Enemy(
+        rng.get_int(MIN_X, MAX_X),
+        rng.get_int(MIN_Y, MAX_Y),
+        1,
+        ENEMY_SIZE
+    ));
+
+    int frame_counter = 0;
+    static constexpr int SPAWN_RATE = 180;
 
     while(true) {
         player.update();
-        enemy.update(player);
+
+        frame_counter++;
+
+        // Spawn new enemy every 3 if there's room
+        if(frame_counter >= SPAWN_RATE) {
+            frame_counter = 0;
+
+            if(enemies.size() < enemies.max_size()) {
+                enemies.push_back(Enemy(
+                    rng.get_int(MIN_X, MAX_X),
+                    rng.get_int(MIN_Y, MAX_Y),
+                    1,
+                    ENEMY_SIZE
+                ));
+            }
+        }
 
         bool caught = false;
 
-         if(enemy.bounding_box.intersects(player.bounding_box)) {
-            scoreDisplay.resetScore();
-            player.sprite.set_x(44);
-            player.sprite.set_y(22);
-        }
         // Update each enemy + check collision against player
         for(Enemy& enemy : enemies) {
             enemy.update(player);
@@ -219,17 +235,6 @@ int main() {
             }
         }
 
-        // If ANY enemy catches the player, reset score + player position
-        if(caught) {
-            scoreDisplay.resetScore();
-            player.sprite.set_x(44);
-            player.sprite.set_y(22);
-            player.bounding_box = create_bounding_box(player.sprite, player.size); // keep collision accurate
-        }
-        else {
-            // Only increase score when not caught (so it doesn't instantly become 1 after reset)
-            scoreDisplay.update();
-        }
 
         bn::core::update();
     }
