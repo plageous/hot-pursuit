@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "bn_sprite_items_dot.h"
+#include "bn_sprite_items_cheese.h"
 #include <bn_keypad.h>
 #include <bn_display.h>
 
@@ -11,7 +11,7 @@ static constexpr int MIN_X = -bn::display::width() / 2;
 static constexpr int MAX_X = bn::display::width() / 2;
 
 Player::Player(int starting_x, int starting_y, bn::fixed spd, bn::size sz) :
-    sprite(bn::sprite_items::dot.create_sprite(starting_x, starting_y)),
+    sprite(bn::sprite_items::cheese.create_sprite(starting_x, starting_y)),
     speed(spd),
     size(sz),
     bounding_box(create_bounding_box(sprite, size))

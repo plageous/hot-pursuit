@@ -1,13 +1,13 @@
 #include "Powerup.h"
 
-#include "bn_sprite_items_dot.h"   // or your powerup sprite item
+#include "bn_sprite_items_battery.h"   // or your powerup sprite item
 // If create_bounding_box lives elsewhere, include that header instead of extern:
 extern bn::rect create_bounding_box(bn::sprite_ptr sprite, bn::size box_size);
 
 static constexpr bn::size POWERUP_SIZE = {8, 8};
 
 PowerUp::PowerUp() :
-    sprite(bn::sprite_items::dot.create_sprite(0, 0)),
+    sprite(bn::sprite_items::battery.create_sprite(0, 0)),
     bounding_box(create_bounding_box(sprite, POWERUP_SIZE)),
     active(false)
 {

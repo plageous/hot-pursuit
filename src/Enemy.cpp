@@ -1,6 +1,6 @@
 #include "Enemy.h"
 #include "Player.h"
-#include "bn_sprite_items_square.h"
+#include "bn_sprite_items_mouse.h"
 #include <bn_display.h>
 
 extern bn::rect create_bounding_box(bn::sprite_ptr sprite, bn::size box_size);
@@ -11,7 +11,7 @@ static constexpr int MIN_X = -bn::display::width() / 2;
 static constexpr int MAX_X = bn::display::width() / 2;
 
 Enemy::Enemy(int x, int y, bn::fixed spd, bn::size sz) :
-    sprite(bn::sprite_items::square.create_sprite(x, y)),
+    sprite(bn::sprite_items::mouse.create_sprite(x, y)),
     speed(spd),
     size(sz),
     bounding_box(create_bounding_box(sprite, size))
